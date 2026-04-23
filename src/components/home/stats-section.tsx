@@ -1,33 +1,33 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { FileText, Building2, Tag, Users } from 'lucide-react'
+import { MessageCircle, MapPin, Tag, Users } from 'lucide-react'
 
 const stats = [
   {
-    icon: FileText,
-    value: '25K+',
-    label: 'Articles Published',
-    description: 'Quality content created by our community'
-  },
-  {
-    icon: Building2,
-    value: '12K+',
-    label: 'Business Listings',
-    description: 'Verified businesses and services'
-  },
-  {
     icon: Tag,
-    value: '50K+',
-    label: 'Classified Ads',
-    description: 'Items listed and sold'
+    value: '52K+',
+    label: 'Live classifieds',
+    description: 'Fresh listings across electronics, home, and wheels',
+  },
+  {
+    icon: MessageCircle,
+    value: '38K+',
+    label: 'Buyer conversations',
+    description: 'On-platform replies that keep context in one thread',
+  },
+  {
+    icon: MapPin,
+    value: '120+',
+    label: 'Cities represented',
+    description: 'Neighborhood-first discovery with regional editors',
   },
   {
     icon: Users,
-    value: '100K+',
-    label: 'Active Users',
-    description: 'Growing community members'
-  }
+    value: '18K+',
+    label: 'Active sellers',
+    description: 'People who photograph honestly and ship quickly',
+  },
 ]
 
 export function StatsSection() {
@@ -35,12 +35,8 @@ export function StatsSection() {
     <section className="border-b border-border bg-secondary/30 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 text-center">
-          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
-            Platform in Numbers
-          </h2>
-          <p className="mt-2 text-muted-foreground">
-            Join our thriving community of creators and businesses
-          </p>
+          <h2 className="font-display text-2xl font-semibold text-foreground sm:text-3xl">Marketplace in motion</h2>
+          <p className="mt-2 text-muted-foreground">Signals from a calmer corner of local commerce—no feeds, just facts.</p>
         </div>
 
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">

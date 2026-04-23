@@ -33,8 +33,8 @@ const variantShells = {
   'image-portfolio': 'bg-[linear-gradient(180deg,#07111f_0%,#13203a_100%)] text-white',
   'profile-creator': 'bg-[linear-gradient(180deg,#0a1120_0%,#101c34_100%)] text-white',
   'profile-business': 'bg-[linear-gradient(180deg,#f6fbff_0%,#ffffff_100%)]',
-  'classified-bulletin': 'bg-[linear-gradient(180deg,#edf3e4_0%,#ffffff_100%)]',
-  'classified-market': 'bg-[linear-gradient(180deg,#f4f6ef_0%,#ffffff_100%)]',
+  'classified-bulletin': 'bg-[linear-gradient(180deg,#fdf9f3_0%,#ffffff_100%)]',
+  'classified-market': 'bg-[linear-gradient(180deg,#fdf9f3_0%,#faf4ec_42%,#ffffff_100%)]',
   'sbm-curation': 'bg-[linear-gradient(180deg,#fff7ee_0%,#ffffff_100%)]',
   'sbm-library': 'bg-[linear-gradient(180deg,#f7f8fc_0%,#ffffff_100%)]',
 } as const
@@ -61,6 +61,7 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
   const Icon = taskIcons[task] || LayoutGrid
 
   const isDark = ['image-masonry', 'image-portfolio', 'profile-creator'].includes(layoutKey)
+  const isClassifiedWarm = layoutKey === 'classified-market' || layoutKey === 'classified-bulletin'
   const ui = isDark
     ? {
         muted: 'text-slate-300',
@@ -77,13 +78,21 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
           input: 'border border-[#dbc6b6] bg-white text-[#2f1d16]',
           button: 'bg-[#2f1d16] text-[#fff4e4] hover:bg-[#452920]',
         }
-      : {
-          muted: 'text-slate-600',
-          panel: 'border border-slate-200 bg-white',
-          soft: 'border border-slate-200 bg-slate-50',
-          input: 'border border-slate-200 bg-white text-slate-950',
-          button: 'bg-slate-950 text-white hover:bg-slate-800',
-        }
+      : isClassifiedWarm
+        ? {
+            muted: 'text-[#6b5348]',
+            panel: 'border border-[#e8ddd4] bg-[#fffdfb]/95 shadow-[0_24px_70px_rgba(50,32,24,0.06)]',
+            soft: 'border border-[#e8ddd4] bg-[#faf4ec]',
+            input: 'border border-[#e8ddd4] bg-white text-[#1c1410]',
+            button: 'bg-[#1c1410] text-[#fff8f0] hover:bg-[#2a221c]',
+          }
+        : {
+            muted: 'text-slate-600',
+            panel: 'border border-slate-200 bg-white',
+            soft: 'border border-slate-200 bg-slate-50',
+            input: 'border border-slate-200 bg-white text-slate-950',
+            button: 'bg-slate-950 text-white hover:bg-slate-800',
+          }
 
   return (
     <div className={`min-h-screen ${shellClass}`}>
@@ -200,15 +209,35 @@ export async function TaskListPage({ task, category }: { task: TaskKey; category
         ) : null}
 
         {layoutKey === 'classified-bulletin' || layoutKey === 'classified-market' ? (
-          <section className="mb-12 grid gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-            <div className={`rounded-[1.8rem] p-6 ${ui.panel}`}>
-              <p className={`text-xs uppercase tracking-[0.3em] ${ui.muted}`}>{taskConfig?.label || task}</p>
-              <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] text-foreground">Fast-moving notices, offers, and responses in a compact board format.</h1>
+          <section className="mb-12 grid gap-8 lg:grid-cols-[1fr_0.95fr] lg:items-end">
+            <div className={`rounded-[2rem] p-8 ${ui.panel}`}>
+              <p className={`text-[11px] font-semibold uppercase tracking-[0.26em] text-[#7c6aa8]`}>Browse the board</p>
+              <h1 className="mt-4 font-display text-4xl font-semibold tracking-[-0.04em] text-foreground sm:text-5xl">
+                Local classifieds with room to breathe—photos first, fluff never.
+              </h1>
+              <p className={`mt-5 max-w-2xl text-sm leading-8 ${ui.muted}`}>
+                Filter by category, scan prices at a glance, and jump into detail only when something feels right. Built for weekend sellers and weekday buyers alike.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link href="/create" className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${ui.button}`}>
+                  Post an ad
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link href="/search" className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${ui.soft}`}>
+                  Search everything
+                </Link>
+              </div>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {['Quick to scan', 'Shorter response path', 'Clearer urgency cues'].map((item) => (
-                <div key={item} className={`rounded-[1.5rem] p-5 ${ui.soft}`}>
-                  <p className="text-sm font-semibold">{item}</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                { title: 'Neighborhood scale', body: 'Hyperlocal inventory that still feels curated, not chaotic.' },
+                { title: 'Honest media', body: 'Large thumbnails so condition and detail stay visible in the grid.' },
+                { title: 'Fast paths', body: 'Save ads, share links, and message sellers without leaving the flow.' },
+                { title: 'Fresh daily', body: 'New listings surface automatically so repeat visits stay interesting.' },
+              ].map((item) => (
+                <div key={item.title} className={`rounded-[1.5rem] p-5 ${ui.soft}`}>
+                  <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                  <p className={`mt-2 text-sm leading-relaxed ${ui.muted}`}>{item.body}</p>
                 </div>
               ))}
             </div>
