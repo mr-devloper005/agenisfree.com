@@ -5,10 +5,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import {
   LayoutDashboard,
-  FileText,
-  Store,
   Tag,
-  BarChart3,
   MessageSquare,
   Heart,
   Eye,
@@ -17,7 +14,6 @@ import {
   Plus,
   ArrowRight,
   Calendar,
-  Bell,
   Settings,
   ChevronRight,
   MoreHorizontal,
@@ -28,7 +24,6 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,37 +49,37 @@ import {
 const recentActivity = [
   {
     id: 1,
-    type: "comment",
-    user: "Sarah Wilson",
-    action: "commented on your article",
-    target: "Building Modern Web Apps",
-    time: "5 min ago",
+    type: "message",
+    user: "Jordan Lee",
+    action: "asked about availability on",
+    target: "Sony A7IV Camera Kit",
+    time: "12 min ago",
     avatar: "/placeholder.svg?height=40&width=40",
   },
   {
     id: 2,
-    type: "like",
-    user: "Mike Chen",
-    action: "liked your listing",
-    target: "Tech Solutions Inc.",
-    time: "15 min ago",
+    type: "save",
+    user: "Priya Desai",
+    action: "saved your ad",
+    target: "Vintage Mid-Century Sofa",
+    time: "28 min ago",
     avatar: "/placeholder.svg?height=40&width=40",
   },
   {
     id: 3,
-    type: "follow",
-    user: "Emily Johnson",
-    action: "started following you",
-    target: "",
+    type: "message",
+    user: "Alex Rivera",
+    action: "requested pickup window for",
+    target: "Herman Miller Aeron Chair",
     time: "1 hour ago",
     avatar: "/placeholder.svg?height=40&width=40",
   },
   {
     id: 4,
-    type: "message",
-    user: "Alex Rivera",
-    action: "sent you a message about",
-    target: "2019 Honda Civic",
+    type: "view",
+    user: "Marketplace",
+    action: "Your MacBook ad crossed",
+    target: "200 views today",
     time: "2 hours ago",
     avatar: "/placeholder.svg?height=40&width=40",
   },
@@ -145,51 +140,47 @@ export default function DashboardPage() {
   const totalViews = useMemo(
     () =>
       userArticles.reduce((sum, article) => sum + (article.views || 0), 0) +
-      userListings.reduce((sum, listing) => sum + (listing.views || 0), 0) +
       userAds.reduce((sum, ad) => sum + (ad.views || 0), 0),
-    [userAds, userArticles, userListings]
+    [userAds, userArticles]
   )
-  const totalLikes = useMemo(
-    () => userArticles.reduce((sum, article) => sum + (article.likes || 0), 0),
-    [userArticles]
+  const totalSaves = useMemo(
+    () => userAds.reduce((sum, ad) => sum + (ad.saves || 0), 0),
+    [userAds]
   )
-  const totalComments = useMemo(
-    () => userArticles.reduce((sum, article) => sum + (article.commentsCount || 0), 0),
-    [userArticles]
-  )
+  const activeAds = useMemo(() => userAds.filter((ad) => ad.status === "active").length, [userAds])
 
   const statsData = useMemo(
     () => [
       {
-        title: "Total Views",
+        title: "Ad views",
         value: totalViews.toLocaleString(),
         change: "Live",
         trend: "up",
         icon: Eye,
       },
       {
-        title: "Total Likes",
-        value: totalLikes.toLocaleString(),
-        change: "Live",
+        title: "Active ads",
+        value: activeAds.toLocaleString(),
+        change: "Now",
         trend: "up",
+        icon: LayoutDashboard,
+      },
+      {
+        title: "Saves on your ads",
+        value: totalSaves.toLocaleString(),
+        change: "Live",
+        trend: totalSaves > 0 ? "up" : "down",
         icon: Heart,
       },
       {
-        title: "Comments",
-        value: totalComments.toLocaleString(),
-        change: "Live",
-        trend: totalComments > 0 ? "up" : "down",
+        title: "Inbox threads",
+        value: "—",
+        change: "Soon",
+        trend: "up",
         icon: MessageSquare,
       },
-      {
-        title: "Followers",
-        value: (user?.followers ?? 0).toLocaleString(),
-        change: "Live",
-        trend: "up",
-        icon: TrendingUp,
-      },
     ],
-    [totalComments, totalLikes, totalViews, user]
+    [activeAds, totalSaves, totalViews]
   )
 
   const viewsData = useMemo(() => {
@@ -204,12 +195,11 @@ export default function DashboardPage() {
 
   const contentData = useMemo(
     () => [
-      { name: "Articles", count: userArticles.length },
-      { name: "Listings", count: userListings.length },
-      { name: "Ads", count: userAds.length },
-      { name: "Reviews", count: 0 },
+      { name: "Live ads", count: userAds.filter((a) => a.status === "active").length },
+      { name: "Paused", count: userAds.filter((a) => a.status !== "active" && a.status !== "sold").length },
+      { name: "Sold", count: userAds.filter((a) => a.status === "sold").length },
     ],
-    [userAds.length, userArticles.length, userListings.length]
+    [userAds]
   )
 
   const myContent = useMemo(
@@ -230,7 +220,7 @@ export default function DashboardPage() {
         id: listing.id,
         title: listing.title,
         status: listing.status,
-        views: listing.views ?? 0,
+        views: 0,
         inquiries: 0,
         date: new Date(listing.createdAt).toLocaleDateString("en-US", {
           month: "short",
@@ -263,50 +253,23 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+            <h1 className="font-display text-3xl font-semibold text-foreground">Seller dashboard</h1>
             <p className="text-muted-foreground mt-1">
-              Welcome back, {user?.name || "User"}! Here's what's happening.
+              Welcome back, {user?.name || "neighbor"}—here is how your classifieds are performing.
             </p>
           </div>
           <div className="flex gap-3">
-                <Button variant="outline" size="icon" asChild>
-                  <Link href="/dashboard/notifications">
-                    <Bell className="h-4 w-4" />
-                  </Link>
-                </Button>
             <Button variant="outline" size="icon" asChild>
               <Link href="/settings">
                 <Settings className="h-4 w-4" />
               </Link>
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create New
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard/articles/new">
-                    <FileText className="h-4 w-4 mr-2" />
-                    New Article
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard/listings/new">
-                    <Store className="h-4 w-4 mr-2" />
-                    New Listing
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard/ads/new">
-                    <Tag className="h-4 w-4 mr-2" />
-                    New Ad
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button asChild>
+              <Link href="/dashboard/ads/new">
+                <Plus className="h-4 w-4 mr-2" />
+                Post classified
+              </Link>
+            </Button>
           </div>
         </div>
 
@@ -318,7 +281,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-card rounded-xl border border-border p-6"
+              className="rounded-2xl border border-[#e8ddd4] bg-[#fffdfb]/95 p-6 shadow-[0_18px_50px_rgba(50,32,24,0.05)]"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -355,16 +318,12 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-card rounded-xl border border-border p-6"
+              className="rounded-2xl border border-[#e8ddd4] bg-[#fffdfb]/95 p-6 shadow-[0_18px_50px_rgba(50,32,24,0.05)]"
             >
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground">
-                    Views Overview
-                  </h2>
-                  <p className="text-sm text-muted-foreground">
-                    Your content performance this week
-                  </p>
+                  <h2 className="text-lg font-semibold text-foreground">Views across your ads</h2>
+                  <p className="text-sm text-muted-foreground">Estimated weekly attention on active classifieds</p>
                 </div>
                 <Button
                   variant="outline"
@@ -428,227 +387,76 @@ export default function DashboardPage() {
               </div>
             </motion.div>
 
-            {/* Content Tabs */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-card rounded-xl border border-border"
+              className="rounded-2xl border border-[#e8ddd4] bg-[#fffdfb]/95 shadow-[0_18px_50px_rgba(50,32,24,0.05)]"
             >
-              <Tabs defaultValue="articles" className="w-full">
-                <div className="px-6 pt-6">
-                  <h2 className="text-lg font-semibold text-foreground mb-4">
-                    My Content
-                  </h2>
-                  <TabsList className="w-full justify-start bg-muted/50">
-                    <TabsTrigger value="articles">Articles</TabsTrigger>
-                    <TabsTrigger value="listings">Listings</TabsTrigger>
-                    <TabsTrigger value="ads">Ads</TabsTrigger>
-                  </TabsList>
-                </div>
-
-                <TabsContent value="articles" className="p-6 pt-4">
-                  <div className="space-y-4">
-                    {myContent.articles.map((article) => (
-                      <div
-                        key={article.id}
-                        className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-foreground truncate">
-                            {article.title}
-                          </h3>
-                          <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                            <span>{article.date}</span>
-                            <span>{article.views} views</span>
-                            <span>{article.likes} likes</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 ml-4">
-                          <Badge
-                            variant={
-                              article.status === "published"
-                                ? "default"
-                                : "secondary"
-                            }
-                          >
-                            {article.status}
-                          </Badge>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/articles/${article.id}/edit`}>
-                                  <Edit className="h-4 w-4 mr-2" />
-                                  Edit
-                                </Link>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/articles/${article.id}`}>
-                                  <ExternalLink className="h-4 w-4 mr-2" />
-                                  View
-                                </Link>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/articles/${article.id}/edit`}>
-                                  <Trash2 className="h-4 w-4 mr-2" />
-                                  Delete
-                                </Link>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+              <div className="px-6 pt-6">
+                <h2 className="mb-4 text-lg font-semibold text-foreground">Your classifieds</h2>
+              </div>
+              <div className="space-y-4 p-6 pt-0">
+                {myContent.ads.length === 0 ? (
+                  <p className="rounded-xl border border-dashed border-[#e8ddd4] bg-[#faf4ec]/60 px-4 py-8 text-center text-sm text-muted-foreground">
+                    No ads yet—publish your first listing to see performance here.
+                  </p>
+                ) : (
+                  myContent.ads.map((ad) => (
+                    <div
+                      key={ad.id}
+                      className="flex items-center justify-between rounded-xl border border-[#efe6de] bg-[#faf7f3]/80 p-4 transition-colors hover:bg-[#f3ebe3]"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <h3 className="truncate font-medium text-foreground">{ad.title}</h3>
+                        <div className="mt-1 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                          <span className="font-medium text-foreground">{ad.price}</span>
+                          <span>{ad.views} views</span>
+                          <span>{ad.messages} messages</span>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                  <Button variant="outline" className="w-full mt-4" asChild>
-                    <Link href="/dashboard/articles">
-                      View all articles
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </Link>
-                  </Button>
-                </TabsContent>
-
-                <TabsContent value="listings" className="p-6 pt-4">
-                  <div className="space-y-4">
-                    {myContent.listings.map((listing) => (
-                      <div
-                        key={listing.id}
-                        className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-foreground truncate">
-                            {listing.title}
-                          </h3>
-                          <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                            <span>{listing.date}</span>
-                            <span>{listing.views} views</span>
-                            <span>{listing.inquiries} inquiries</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 ml-4">
-                          <Badge
-                            variant={
-                              listing.status === "active"
-                                ? "default"
-                                : "secondary"
-                            }
-                          >
-                            {listing.status}
-                          </Badge>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/listings/${listing.id}/edit`}>
-                                  <Edit className="h-4 w-4 mr-2" />
-                                  Edit
-                                </Link>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/listings/${listing.id}`}>
-                                  <ExternalLink className="h-4 w-4 mr-2" />
-                                  View
-                                </Link>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/listings/${listing.id}/edit`}>
-                                  <Trash2 className="h-4 w-4 mr-2" />
-                                  Delete
-                                </Link>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
+                      <div className="ml-4 flex items-center gap-3">
+                        <Badge variant={ad.status === "active" ? "default" : ad.status === "sold" ? "secondary" : "outline"}>{ad.status}</Badge>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                              <Link href={`/dashboard/ads/${ad.id}/edit`}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link href={`/dashboard/ads/${ad.id}`}>
+                                <ExternalLink className="mr-2 h-4 w-4" />
+                                View
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link href={`/dashboard/ads/${ad.id}/edit`}>
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </Link>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
-                    ))}
-                  </div>
-                  <Button variant="outline" className="w-full mt-4" asChild>
-                    <Link href="/dashboard/listings">
-                      View all listings
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </Link>
-                  </Button>
-                </TabsContent>
-
-                <TabsContent value="ads" className="p-6 pt-4">
-                  <div className="space-y-4">
-                    {myContent.ads.map((ad) => (
-                      <div
-                        key={ad.id}
-                        className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-foreground truncate">
-                            {ad.title}
-                          </h3>
-                          <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                            <span className="font-medium text-foreground">
-                              {ad.price}
-                            </span>
-                            <span>{ad.views} views</span>
-                            <span>{ad.messages} messages</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3 ml-4">
-                          <Badge
-                            variant={
-                              ad.status === "active"
-                                ? "default"
-                                : ad.status === "sold"
-                                ? "secondary"
-                                : "outline"
-                            }
-                          >
-                            {ad.status}
-                          </Badge>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/ads/${ad.id}/edit`}>
-                                  <Edit className="h-4 w-4 mr-2" />
-                                  Edit
-                                </Link>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/ads/${ad.id}`}>
-                                  <ExternalLink className="h-4 w-4 mr-2" />
-                                  View
-                                </Link>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/ads/${ad.id}/edit`}>
-                                  <Trash2 className="h-4 w-4 mr-2" />
-                                  Delete
-                                </Link>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <Button variant="outline" className="w-full mt-4" asChild>
-                    <Link href="/dashboard/ads">
-                      View all ads
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </Link>
-                  </Button>
-                </TabsContent>
-              </Tabs>
+                    </div>
+                  ))
+                )}
+              </div>
+              <div className="px-6 pb-6">
+                <Button variant="outline" className="w-full rounded-full border-[#e8ddd4]" asChild>
+                  <Link href="/dashboard/ads">
+                    View all classifieds
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
             </motion.div>
           </div>
 
@@ -659,11 +467,9 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-card rounded-xl border border-border p-6"
+              className="rounded-2xl border border-[#e8ddd4] bg-[#fffdfb]/95 p-6 shadow-[0_18px_50px_rgba(50,32,24,0.05)]"
             >
-              <h2 className="text-lg font-semibold text-foreground mb-4">
-                Content Distribution
-              </h2>
+              <h2 className="mb-4 text-lg font-semibold text-foreground">Ad status mix</h2>
               <div className="h-48">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={contentData} layout="vertical">
@@ -698,12 +504,10 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="bg-card rounded-xl border border-border p-6"
+              className="rounded-2xl border border-[#e8ddd4] bg-[#fffdfb]/95 p-6 shadow-[0_18px_50px_rgba(50,32,24,0.05)]"
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-foreground">
-                  Recent Activity
-                </h2>
+                <h2 className="text-lg font-semibold text-foreground">Recent buyer signals</h2>
                 <Button variant="ghost" size="sm" asChild>
                   <Link href="/dashboard/notifications">View all</Link>
                 </Button>
@@ -737,38 +541,22 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="bg-card rounded-xl border border-border p-6"
+              className="rounded-2xl border border-[#e8ddd4] bg-[#fffdfb]/95 p-6 shadow-[0_18px_50px_rgba(50,32,24,0.05)]"
             >
-              <h2 className="text-lg font-semibold text-foreground mb-4">
-                Quick Actions
-              </h2>
+              <h2 className="mb-4 text-lg font-semibold text-foreground">Quick actions</h2>
               <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start" asChild>
-                  <Link href="/dashboard/articles/new">
-                    <FileText className="h-4 w-4 mr-3" />
-                    Write new article
-                    <ChevronRight className="h-4 w-4 ml-auto" />
-                  </Link>
-                </Button>
-                <Button variant="outline" className="w-full justify-start" asChild>
-                  <Link href="/dashboard/listings/new">
-                    <Store className="h-4 w-4 mr-3" />
-                    Add business listing
-                    <ChevronRight className="h-4 w-4 ml-auto" />
-                  </Link>
-                </Button>
-                <Button variant="outline" className="w-full justify-start" asChild>
+                <Button variant="outline" className="w-full justify-start rounded-xl border-[#e8ddd4]" asChild>
                   <Link href="/dashboard/ads/new">
-                    <Tag className="h-4 w-4 mr-3" />
-                    Post classified ad
-                    <ChevronRight className="h-4 w-4 ml-auto" />
+                    <Tag className="mr-3 h-4 w-4" />
+                    Post a classified
+                    <ChevronRight className="ml-auto h-4 w-4" />
                   </Link>
                 </Button>
-                <Button variant="outline" className="w-full justify-start" asChild>
-                  <Link href="/sbm">
-                    <BarChart3 className="h-4 w-4 mr-3" />
-                    Open Social Bookmarks
-                    <ChevronRight className="h-4 w-4 ml-auto" />
+                <Button variant="outline" className="w-full justify-start rounded-xl border-[#e8ddd4]" asChild>
+                  <Link href="/classifieds">
+                    <Eye className="mr-3 h-4 w-4" />
+                    Preview public board
+                    <ChevronRight className="ml-auto h-4 w-4" />
                   </Link>
                 </Button>
               </div>

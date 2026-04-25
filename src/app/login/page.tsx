@@ -1,102 +1,74 @@
 import Link from 'next/link'
-import { Bookmark, Building2, FileText, Image as ImageIcon, Sparkles } from 'lucide-react'
+import { ArrowLeft, Sparkles, Tag } from 'lucide-react'
 import { NavbarShell } from '@/components/shared/navbar-shell'
 import { Footer } from '@/components/shared/footer'
-import { getFactoryState } from '@/design/factory/get-factory-state'
-import { getProductKind } from '@/design/factory/get-product-kind'
-import { LOGIN_PAGE_OVERRIDE_ENABLED, LoginPageOverride } from '@/overrides/login-page'
+import { ClassifiedLoginForm } from '@/components/auth/classified-auth-forms'
 
-function getLoginConfig(kind: ReturnType<typeof getProductKind>) {
-  if (kind === 'directory') {
-    return {
-      shell: 'bg-[#f8fbff] text-slate-950',
-      panel: 'border border-slate-200 bg-white',
-      side: 'border border-slate-200 bg-slate-50',
-      muted: 'text-slate-600',
-      action: 'bg-slate-950 text-white hover:bg-slate-800',
-      icon: Building2,
-      title: 'Access your business dashboard',
-      body: 'Manage listings, verification details, contact info, and local discovery surfaces from one place.',
-    }
-  }
-  if (kind === 'editorial') {
-    return {
-      shell: 'bg-[#fbf6ee] text-[#241711]',
-      panel: 'border border-[#dcc8b7] bg-[#fffdfa]',
-      side: 'border border-[#e6d6c8] bg-[#fff4e8]',
-      muted: 'text-[#6e5547]',
-      action: 'bg-[#241711] text-[#fff1e2] hover:bg-[#3a241b]',
-      icon: FileText,
-      title: 'Sign in to your publication workspace',
-      body: 'Draft, review, and publish long-form work with the calmer reading system intact.',
-    }
-  }
-  if (kind === 'visual') {
-    return {
-      shell: 'bg-[#07101f] text-white',
-      panel: 'border border-white/10 bg-white/6',
-      side: 'border border-white/10 bg-white/5',
-      muted: 'text-slate-300',
-      action: 'bg-[#8df0c8] text-[#07111f] hover:bg-[#77dfb8]',
-      icon: ImageIcon,
-      title: 'Enter the creator workspace',
-      body: 'Open your visual feed, creator profile, and publishing tools without dropping into a generic admin shell.',
-    }
-  }
-  return {
-    shell: 'bg-[#f7f1ea] text-[#261811]',
-    panel: 'border border-[#ddcdbd] bg-[#fffaf4]',
-    side: 'border border-[#e8dbce] bg-[#f3e8db]',
-    muted: 'text-[#71574a]',
-    action: 'bg-[#5b2b3b] text-[#fff0f5] hover:bg-[#74364b]',
-    icon: Bookmark,
-    title: 'Open your curated collections',
-    body: 'Manage saved resources, collection notes, and curator identity from a calmer workspace.',
-  }
-}
+const bullets = [
+  'Post and manage ads in minutes—clean photos, clear prices.',
+  'Chat with local buyers through the in-app inbox, no phone sharing.',
+  'Your session stays on this device until you choose to sign out.',
+]
 
 export default function LoginPage() {
-  if (LOGIN_PAGE_OVERRIDE_ENABLED) {
-    return <LoginPageOverride />
-  }
-
-  const { recipe } = getFactoryState()
-  const productKind = getProductKind(recipe)
-  const config = getLoginConfig(productKind)
-  const Icon = config.icon
-
   return (
-    <div className={`min-h-screen ${config.shell}`}>
+    <div className="min-h-screen bg-[linear-gradient(180deg,#fdf9f3_0%,#faf4ec_45%,#f6efe6_100%)] text-[#1c1410]">
       <NavbarShell />
-      <main className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <section className="grid gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-stretch">
-          <div className={`rounded-[2rem] p-8 ${config.side}`}>
-            <Icon className="h-8 w-8" />
-            <h1 className="mt-5 text-4xl font-semibold tracking-[-0.05em]">{config.title}</h1>
-            <p className={`mt-5 text-sm leading-8 ${config.muted}`}>{config.body}</p>
-            <div className="mt-8 grid gap-4">
-              {['Cleaner product-specific workflows', 'Palette and layout matched to the site family', 'Fewer repeated admin patterns'].map((item) => (
-                <div key={item} className="rounded-[1.5rem] border border-current/10 px-4 py-4 text-sm">{item}</div>
-              ))}
-            </div>
-          </div>
+      <main className="relative overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(196,181,220,0.32),transparent_45%),radial-gradient(circle_at_88%_0%,rgba(232,213,196,0.45),transparent_40%)]" />
+        <div className="relative mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#7c6aa8] hover:text-[#5a4a88]"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Back home
+          </Link>
 
-          <div className={`rounded-[2rem] p-8 ${config.panel}`}>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] opacity-70">Welcome back</p>
-            <form className="mt-6 grid gap-4">
-              <input className="h-12 rounded-xl border border-current/10 bg-transparent px-4 text-sm" placeholder="Email address" />
-              <input className="h-12 rounded-xl border border-current/10 bg-transparent px-4 text-sm" placeholder="Password" type="password" />
-              <button type="submit" className={`inline-flex h-12 items-center justify-center rounded-full px-6 text-sm font-semibold ${config.action}`}>Sign in</button>
-            </form>
-            <div className={`mt-6 flex items-center justify-between text-sm ${config.muted}`}>
-              <Link href="/forgot-password" className="hover:underline">Forgot password?</Link>
-              <Link href="/register" className="inline-flex items-center gap-2 font-semibold hover:underline">
-                <Sparkles className="h-4 w-4" />
-                Create account
-              </Link>
+          <section className="mt-8 grid gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-stretch">
+            <aside className="rounded-[2rem] border border-[#dcd0e5] bg-[linear-gradient(180deg,#f3edf8_0%,#ebe3f4_100%)] p-8 sm:p-10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/60 bg-white/80">
+                <Tag className="h-5 w-5 text-[#7c6aa8]" />
+              </div>
+              <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#7c6aa8]">
+                Welcome back
+              </p>
+              <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-0.03em] text-[#2a1f2e]">
+                Sign in to your marketplace
+              </h1>
+              <p className="mt-5 text-sm leading-8 text-[#5a4a5c]">
+                Keep managing classifieds, reply to buyers, and keep your neighborhood listings fresh—without dropping into
+                a generic admin screen.
+              </p>
+              <div className="mt-8 grid gap-3">
+                {bullets.map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-2xl border border-white/60 bg-white/85 px-4 py-4 text-sm leading-relaxed text-[#2a1f2e]"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </aside>
+
+            <div className="rounded-[2rem] border border-[#e8ddd4] bg-[#fffdfb]/95 p-8 shadow-[0_22px_60px_rgba(50,32,24,0.08)] sm:p-10">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#7c6aa8]">Sign in</p>
+              <h2 className="mt-2 font-display text-3xl font-semibold">Good to see you again</h2>
+              <p className="mt-2 text-sm text-[#6b5348]">Enter the details you used when you created your account.</p>
+              <ClassifiedLoginForm actionClass="bg-[#2a1f2e] text-white hover:bg-[#3c2d41]" />
+              <div className="mt-6 flex items-center justify-between text-sm text-[#6b5348]">
+                <Link href="/forgot-password" className="hover:underline">
+                  Forgot password?
+                </Link>
+                <Link href="/register" className="inline-flex items-center gap-2 font-semibold text-[#7c6aa8] hover:underline">
+                  <Sparkles className="h-4 w-4" />
+                  Create account
+                </Link>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
       <Footer />
     </div>

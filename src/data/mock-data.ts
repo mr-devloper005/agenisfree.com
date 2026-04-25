@@ -1,7 +1,68 @@
 import type { User, Article, Listing, ClassifiedAd, Comment, Bookmark, BookmarkCollection, Notification, Category, Testimonial, DashboardStats, TeamMember, CommunityEvent, CommunityGroup, PressAsset, ApiEndpoint, FAQItem, BlogPost, PressCoverage } from '@/types'
 
 // Mock Users
-export const mockUsers: User[] = []
+export const mockUsers: User[] = [
+  {
+    id: 'user-1',
+    name: 'Taylor Brooks',
+    email: 'taylor@example.com',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop',
+    bio: 'Neighborhood seller focused on home goods.',
+    joinedDate: 'January 2024',
+    location: 'San Francisco, CA',
+    followers: 128,
+    following: 42,
+    isVerified: true,
+  },
+  {
+    id: 'user-2',
+    name: 'Jordan Lee',
+    email: 'jordan@example.com',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop',
+    bio: 'Photographer and electronics enthusiast.',
+    joinedDate: 'March 2024',
+    location: 'Los Angeles, CA',
+    followers: 210,
+    following: 88,
+    isVerified: true,
+  },
+  {
+    id: 'user-3',
+    name: 'Priya Desai',
+    email: 'priya@example.com',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop',
+    bio: 'Cyclist and weekend flipper.',
+    joinedDate: 'February 2024',
+    location: 'Austin, TX',
+    followers: 96,
+    following: 54,
+    isVerified: false,
+  },
+  {
+    id: 'user-4',
+    name: 'Alex Rivera',
+    email: 'alex@example.com',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop',
+    bio: 'Camera gear collector.',
+    joinedDate: 'April 2024',
+    location: 'New York, NY',
+    followers: 340,
+    following: 120,
+    isVerified: true,
+  },
+  {
+    id: 'user-5',
+    name: 'Sam Morgan',
+    email: 'sam@example.com',
+    avatar: 'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=200&h=200&fit=crop',
+    bio: 'Office ergonomics nerd.',
+    joinedDate: 'May 2024',
+    location: 'Seattle, WA',
+    followers: 72,
+    following: 30,
+    isVerified: false,
+  },
+]
 
 export const currentUser: User = mockUsers[0]
 
@@ -716,27 +777,27 @@ export const mockCategories: Category[] = [
 export const mockTestimonials: Testimonial[] = [
   {
     id: '1',
-    content: 'This platform has completely transformed how we manage our business listings. The interface is intuitive and our engagement has increased by 300%.',
+    content: 'I sold a road bike and a lens kit the same weekend. Buyers actually read the descriptions—no endless lowball threads.',
     author: mockUsers[1],
     rating: 5,
-    company: 'TechStart Inc.',
-    role: 'CEO'
+    company: 'Bay Area Seller',
+    role: 'Photographer'
   },
   {
     id: '2',
-    content: 'The best publishing platform I\'ve used. The reading experience rivals Medium, and the community engagement features are outstanding.',
+    content: 'Finally a classifieds site that feels editorial instead of chaotic. Large photos and calm typography help me compare sofas fast.',
     author: mockUsers[2],
     rating: 5,
-    company: 'Creative Agency',
-    role: 'Content Director'
+    company: 'Remote Designer',
+    role: 'Home buyer'
   },
   {
     id: '3',
-    content: 'Sold my items within days of listing. The classified ads section is well-designed and attracts serious buyers.',
+    content: 'Posting took under ten minutes. Notifications stay tidy and I always know which ad someone is asking about.',
     author: mockUsers[3],
     rating: 4,
-    company: 'Freelance',
-    role: 'Photographer'
+    company: 'Weekend flipper',
+    role: 'Electronics hobbyist'
   }
 ]
 
