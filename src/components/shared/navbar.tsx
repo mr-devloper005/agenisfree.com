@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Search, Menu, X, User, FileText, Building2, LayoutGrid, Tag, Image as ImageIcon, ChevronRight, Sparkles, MapPin, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth-context'
@@ -68,24 +68,29 @@ const variantClasses = {
 
 const directoryPalette = {
   'directory-clean': {
-    shell: 'border-b border-slate-200 bg-white/94 text-slate-950 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-xl',
-    logo: 'rounded-2xl border border-slate-200 bg-slate-50',
-    nav: 'text-slate-600 hover:text-slate-950',
-    search: 'border border-slate-200 bg-slate-50 text-slate-600',
-    cta: 'bg-slate-950 text-white hover:bg-slate-800',
-    post: 'border border-slate-200 bg-white text-slate-950 hover:bg-slate-50',
-    mobile: 'border-t border-slate-200 bg-white',
+    shell: 'border-b border-[#e8ddd4] bg-[#fffdfb]/95 text-[#1c1410] shadow-[0_1px_0_rgba(60,40,30,0.05)] backdrop-blur-xl',
+    logo: 'rounded-2xl border border-[#e8ddd4] bg-[#faf4ec]',
+    nav: 'text-[#6b5348] hover:text-[#1c1410]',
+    search: 'border border-[#e8ddd4] bg-[#faf4ec] text-[#6b5348]',
+    cta: 'bg-[#1c1410] text-[#fff8f0] hover:bg-[#2a221c]',
+    post: 'border border-[#e8ddd4] bg-white text-[#1c1410] hover:bg-[#faf4ec]',
+    mobile: 'border-t border-[#e8ddd4] bg-[#fffdfb]',
   },
   'market-utility': {
-    shell: 'border-b border-[#d7deca] bg-[#f4f6ef]/96 text-[#1f2617] shadow-[0_1px_0_rgba(64,76,34,0.06)] backdrop-blur-xl',
-    logo: 'rounded-xl border border-[#d7deca] bg-white',
-    nav: 'text-[#56604b] hover:text-[#1f2617]',
-    search: 'border border-[#d7deca] bg-white text-[#56604b]',
-    cta: 'bg-[#1f2617] text-[#edf5dc] hover:bg-[#2f3a24]',
-    post: 'border border-[#d7deca] bg-white text-[#1f2617] hover:bg-[#eef2e4]',
-    mobile: 'border-t border-[#d7deca] bg-[#f4f6ef]',
+    shell: 'border-b border-[#e8ddd4] bg-[#fffdfb]/95 text-[#1c1410] shadow-[0_1px_0_rgba(60,40,30,0.05)] backdrop-blur-xl',
+    logo: 'rounded-xl border border-[#e8ddd4] bg-[#faf4ec]',
+    nav: 'text-[#6b5348] hover:text-[#1c1410]',
+    search: 'border border-[#e8ddd4] bg-[#faf4ec] text-[#6b5348]',
+    cta: 'bg-[#1c1410] text-[#fff8f0] hover:bg-[#2a221c]',
+    post: 'border border-[#e8ddd4] bg-white text-[#1c1410] hover:bg-[#faf4ec]',
+    mobile: 'border-t border-[#e8ddd4] bg-[#fffdfb]',
   },
 } as const
+
+const directorySecondaryNav = [
+  { name: 'About', href: '/about' },
+  { name: 'Contact', href: '/contact' },
+] as const
 
 export function Navbar() {
   if (NAVBAR_OVERRIDE_ENABLED) {
@@ -94,8 +99,19 @@ export function Navbar() {
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const initialQuery = searchParams?.get('q') ?? ''
+  const [searchQuery, setSearchQuery] = useState(initialQuery)
   const { isAuthenticated } = useAuth()
   const { recipe } = getFactoryState()
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const q = searchQuery.trim()
+    router.push(q ? `/search?q=${encodeURIComponent(q)}` : '/search')
+    setIsMobileMenuOpen(false)
+  }
 
   const navigation = useMemo(() => SITE_CONFIG.tasks.filter((task) => task.enabled && task.key !== 'profile'), [])
   const primaryNavigation = navigation.slice(0, 5)
@@ -133,28 +149,47 @@ export function Navbar() {
                   </Link>
                 )
               })}
+              {directorySecondaryNav.map((item) => {
+                const isActive = pathname.startsWith(item.href)
+                return (
+                  <Link key={item.href} href={item.href} className={cn('text-sm font-semibold transition-colors', isActive ? 'text-foreground' : palette.nav)}>
+                    {item.name}
+                  </Link>
+                )
+              })}
             </div>
           </div>
 
           <div className="hidden min-w-0 flex-1 items-center justify-center lg:flex">
-            <div className={cn('flex w-full max-w-xl items-center gap-3 rounded-full px-4 py-3', palette.search)}>
-              <Search className="h-4 w-4" />
-              <span className="text-sm">Find businesses, spaces, and local services</span>
-              <div className="ml-auto hidden items-center gap-1 text-xs opacity-75 md:flex">
+            <form
+              onSubmit={handleSearchSubmit}
+              role="search"
+              className={cn(
+                'flex w-full max-w-xl items-center gap-3 rounded-full px-4 py-2.5 focus-within:ring-2 focus-within:ring-[#c8b7e0]',
+                palette.search,
+              )}
+            >
+              <Search className="h-4 w-4 shrink-0" />
+              <input
+                type="search"
+                name="q"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search furniture, electronics, bikes, and more"
+                className="min-w-0 flex-1 bg-transparent text-sm placeholder:text-current/60 focus:outline-none"
+                aria-label="Search classifieds"
+              />
+              <button
+                type="submit"
+                className="ml-auto hidden items-center gap-1 rounded-full bg-current/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] hover:bg-current/10 md:flex"
+              >
                 <MapPin className="h-3.5 w-3.5" />
-                Local discovery
-              </div>
-            </div>
+                Search
+              </button>
+            </form>
           </div>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            {primaryTask ? (
-              <Link href={primaryTask.route} className="hidden items-center gap-2 rounded-full border border-current/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] opacity-75 md:inline-flex">
-                <Sparkles className="h-3.5 w-3.5" />
-                {primaryTask.label}
-              </Link>
-            ) : null}
-
             {isAuthenticated ? (
               <NavbarAuthControls />
             ) : (
@@ -163,9 +198,9 @@ export function Navbar() {
                   <Link href="/login">Sign In</Link>
                 </Button>
                 <Button size="sm" asChild className={cn('rounded-full', palette.cta)}>
-                  <Link href="/register">
+                  <Link href="/create">
                     <Plus className="mr-1 h-4 w-4" />
-                    Add Listing
+                    Post an ad
                   </Link>
                 </Button>
               </div>
@@ -180,15 +215,43 @@ export function Navbar() {
         {isMobileMenuOpen && (
           <div className={palette.mobile}>
             <div className="space-y-2 px-4 py-4">
-              <div className={cn('mb-3 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium', palette.search)}>
-                <Search className="h-4 w-4" />
-                Find businesses, spaces, and services
-              </div>
+              <form
+                onSubmit={handleSearchSubmit}
+                role="search"
+                className={cn('mb-3 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium', palette.search)}
+              >
+                <Search className="h-4 w-4 shrink-0" />
+                <input
+                  type="search"
+                  name="q"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search local classifieds"
+                  className="min-w-0 flex-1 bg-transparent text-sm placeholder:text-current/60 focus:outline-none"
+                  aria-label="Search classifieds"
+                />
+                <button type="submit" className="text-xs font-semibold uppercase tracking-[0.16em] opacity-80">
+                  Go
+                </button>
+              </form>
               {mobileNavigation.map((item) => {
                 const isActive = pathname.startsWith(item.href)
                 return (
                   <Link key={item.name} href={item.href} onClick={() => setIsMobileMenuOpen(false)} className={cn('flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-colors', isActive ? 'bg-foreground text-background' : palette.post)}>
                     <item.icon className="h-5 w-5" />
+                    {item.name}
+                  </Link>
+                )
+              })}
+              {directorySecondaryNav.map((item) => {
+                const isActive = pathname.startsWith(item.href)
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={cn('flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-colors', isActive ? 'bg-foreground text-background' : palette.post)}
+                  >
                     {item.name}
                   </Link>
                 )

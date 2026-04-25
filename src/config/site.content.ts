@@ -2,10 +2,10 @@ import type { TaskKey } from '@/lib/site-config'
 
 export const siteContent = {
   navbar: {
-    tagline: 'Independent reading platform',
+    tagline: 'Local classifieds marketplace',
   },
   footer: {
-    tagline: 'Stories, resources, and discoverable posts',
+    tagline: 'Trusted local buying & selling',
   },
   hero: {
     badge: 'Latest stories and visuals',
@@ -29,13 +29,13 @@ export const siteContent = {
   },
   home: {
     metadata: {
-      title: 'Stories, visuals, and discoverable content',
+      title: 'Local classifieds & neighborhood deals',
       description:
-        'Explore articles, images, listings, and curated posts through a cleaner reading-first experience.',
-      openGraphTitle: 'Stories, visuals, and discoverable content',
+        'Browse curated classified ads for electronics, home goods, vehicles, and more—built for calm discovery and quick seller replies.',
+      openGraphTitle: 'Local classifieds & neighborhood deals',
       openGraphDescription:
-        'Discover articles, visual posts, and connected content through a calmer reading-first experience.',
-      keywords: ['story platform', 'article site', 'visual content', 'content discovery'],
+        'A warm, editorial-style marketplace for serious buyers and honest sellers in your area.',
+      keywords: ['classifieds', 'local marketplace', 'buy sell', 'used items', 'neighborhood'],
     },
     introBadge: 'About the platform',
     introTitle: 'Built for reading, browsing, and connecting different kinds of content.',
@@ -143,13 +143,13 @@ export const taskIntroCopy: Record<
     title: 'Classifieds, offers, and timely updates',
     paragraphs: [
       'Classified posts help surface offers, notices, deals, and time-sensitive opportunities in a faster-scanning format.',
-      'They work well alongside articles, listings, and profiles, making it easier to connect short-term posts with more structured content.',
-      'Browse by category to find announcements quickly, then continue into related sections when you need more detail.',
+      'Every ad is built around large photography, plain-language pricing, and seller signals so you can compare options without noisy clutter.',
+      'Browse by category to find what is new nearby, then reach out securely when you are ready to make a move.',
     ],
     links: [
-      { label: 'Business listings', href: '/listings' },
-      { label: 'Read articles', href: '/articles' },
-      { label: 'View profiles', href: '/profile' },
+      { label: 'How we work', href: '/about' },
+      { label: 'Talk to support', href: '/contact' },
+      { label: 'Open search', href: '/search' },
     ],
   },
   image: {
