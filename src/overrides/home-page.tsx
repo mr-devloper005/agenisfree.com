@@ -8,7 +8,7 @@ import { SITE_CONFIG } from '@/lib/site-config'
 import { fetchTaskPosts } from '@/lib/task-data'
 import { mockClassifiedAds, mockTestimonials, mockUsers } from '@/data/mock-data'
 
-export const HOME_PAGE_OVERRIDE_ENABLED = true
+export const HOME_PAGE_OVERRIDE_ENABLED = false
 
 const cream = 'bg-[linear-gradient(180deg,#fdf9f3_0%,#faf4ec_45%,#f6efe6_100%)]'
 const ink = 'text-[#1a1410]'
