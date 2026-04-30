@@ -162,6 +162,7 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
         day: "numeric",
       })
     : "";
+  const publishedDate = articleDate;
   const postTags = Array.isArray(post.tags) ? post.tags.filter((tag) => typeof tag === "string") : [];
   const location = content.address || content.location;
   const images = getImageUrls(post, content);
@@ -310,34 +311,83 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
 
             {!isArticle ? (
               <>
-                {!isBookmark ? (
-                  <div className={cn(isClassified ? "w-full" : "")}>
-                    <TaskImageCarousel images={images} />
-                  </div>
-                ) : null}
+                {isClassified ? (
+                  <div className="mx-auto w-full max-w-5xl space-y-8">
+                    <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                      <Link href="/" className="hover:text-foreground">
+                        Home
+                      </Link>
+                      <span>›</span>
+                      <Link href={taskConfig?.route || "/"} className="hover:text-foreground">
+                        {taskConfig?.label || "Classifieds"}
+                      </Link>
+                      <span>›</span>
+                      <span className="text-foreground/80">{post.title}</span>
+                    </div>
 
-                <div className={cn(isClassified ? "mx-auto w-full max-w-4xl" : "mt-6")}>
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                    <Badge variant="secondary" className="inline-flex items-center gap-1">
-                      <Tag className="h-3.5 w-3.5" />
-                      {category}
-                    </Badge>
-                    {location && (
-                      <span className="inline-flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
-                        {location}
-                      </span>
-                    )}
+                    <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-start sm:justify-between">
+                      <h1 className="max-w-3xl text-3xl font-semibold leading-tight text-foreground sm:text-5xl">
+                        {post.title}
+                      </h1>
+                      <Button className="w-full sm:w-auto" variant="secondary">
+                        Check with seller
+                      </Button>
+                    </div>
+
+                    <div className="rounded-2xl border border-border bg-muted/50 p-5">
+                      <div className="grid gap-3 text-sm sm:grid-cols-2">
+                        <p className="text-foreground">
+                          <span className="font-semibold">Published date:</span>{" "}
+                          {publishedDate || "Not available"}
+                        </p>
+                        <p className="text-foreground">
+                          <span className="font-semibold">Location:</span> {location || "Not specified"}
+                        </p>
+                      </div>
+                    </div>
+
+                    {!isBookmark ? (
+                      <div className="w-full">
+                        <TaskImageCarousel images={images} />
+                      </div>
+                    ) : null}
+
+                    <div className="rounded-2xl border border-border bg-card p-6">
+                      <RichContent html={descriptionHtml} className="max-w-none text-base leading-7" />
+                    </div>
                   </div>
-                  <h1 className="mt-4 text-3xl font-semibold text-foreground">{post.title}</h1>
-                  <RichContent html={descriptionHtml} className="mt-3 max-w-3xl" />
-                </div>
+                ) : (
+                  <>
+                    {!isBookmark ? (
+                      <div>
+                        <TaskImageCarousel images={images} />
+                      </div>
+                    ) : null}
+
+                    <div className="mt-6">
+                      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                        <Badge variant="secondary" className="inline-flex items-center gap-1">
+                          <Tag className="h-3.5 w-3.5" />
+                          {category}
+                        </Badge>
+                        {location && (
+                          <span className="inline-flex items-center gap-1">
+                            <MapPin className="h-4 w-4" />
+                            {location}
+                          </span>
+                        )}
+                      </div>
+                      <h1 className="mt-4 text-3xl font-semibold text-foreground">{post.title}</h1>
+                      <RichContent html={descriptionHtml} className="mt-3 max-w-3xl" />
+                    </div>
+                  </>
+                )}
               </>
             ) : null}
 
             {isClassified ? (
-              <div className="mx-auto w-full max-w-4xl rounded-2xl border border-border bg-card p-6">
-                <h2 className="text-lg font-semibold text-foreground">Business details</h2>
+              <div className="mx-auto w-full max-w-5xl rounded-2xl border border-border bg-card p-6">
+                <h2 className="text-lg font-semibold text-foreground">Useful information</h2>
                 <div className="mt-4 space-y-3 text-sm text-muted-foreground">
                   {content.website && (
                     <div className="flex items-start gap-2">
@@ -384,14 +434,14 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
                 <h2 className="text-lg font-semibold text-foreground">Highlights</h2>
                 <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
                   {content.highlights.map((item) => (
-                    <li key={item}>• {item}</li>
+                    <li key={item}>- {item}</li>
                   ))}
                 </ul>
               </div>
             ) : null}
 
             {isClassified && mapEmbedUrl ? (
-              <div className="mx-auto w-full max-w-4xl rounded-2xl border border-border bg-card p-4">
+              <div className="mx-auto w-full max-w-5xl rounded-2xl border border-border bg-card p-4">
                 <p className="text-sm font-semibold text-foreground">Location map</p>
                 <div className="mt-4 overflow-hidden rounded-xl border border-border">
                   <iframe
@@ -541,3 +591,4 @@ export async function TaskDetailPage({ task, slug }: { task: TaskKey; slug: stri
     </div>
   );
 }
+

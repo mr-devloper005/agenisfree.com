@@ -37,14 +37,14 @@ const lanes = [
   },
 ]
 
-const lounge = [
-  { icon: Mail, label: 'Email', value: 'hello@agenisfree.com' },
-  { icon: Clock, label: 'Hours', value: 'Monday–Friday · 9am to 6pm WET' },
-  { icon: MessageCircle, label: 'Community', value: 'Seller circles meet weekly in chat' },
-]
-
 export default function ContactPage() {
   const { toast } = useToast()
+  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'hello@agenisfree.com'
+  const lounge = [
+    { icon: Mail, label: 'Email', value: contactEmail },
+    { icon: Clock, label: 'Hours', value: 'Monday-Friday · 9am to 6pm WET' },
+    { icon: MessageCircle, label: 'Community', value: 'Seller circles meet weekly in chat' },
+  ]
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [topic, setTopic] = useState('')
@@ -112,6 +112,12 @@ export default function ContactPage() {
                 </li>
               ))}
             </ul>
+            <a
+              href={`mailto:${contactEmail}`}
+              className="mt-5 inline-flex items-center justify-center rounded-full bg-[#2a1f2e] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#3c2d41]"
+            >
+              Email us
+            </a>
           </div>
         </div>
 
@@ -153,7 +159,7 @@ export default function ContactPage() {
                 id="topic"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
-                placeholder="Ad trouble, partnership, bug report…"
+                placeholder="Ad trouble, partnership, bug report..."
                 className="h-12 rounded-xl border-[#e8ddd4] bg-[#faf7f3]"
               />
             </div>
@@ -165,7 +171,7 @@ export default function ContactPage() {
                 rows={7}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Share the full context—ad URLs, screenshots, or anything that helps us respond precisely."
+                placeholder="Share the full context-ad URLs, screenshots, or anything that helps us respond precisely."
                 className="rounded-xl border-[#e8ddd4] bg-[#faf7f3]"
               />
             </div>
@@ -177,7 +183,7 @@ export default function ContactPage() {
             className="mt-7 inline-flex items-center justify-center gap-2 rounded-full bg-[#2a1f2e] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#3c2d41] disabled:opacity-60"
           >
             <Sparkles className="h-4 w-4" />
-            {submitting ? 'Sending…' : 'Send message'}
+            {submitting ? 'Sending...' : 'Send message'}
           </button>
         </form>
       </div>
