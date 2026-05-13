@@ -3,16 +3,8 @@ import { PageShell } from "@/components/shared/page-shell"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { mockTeamMembers } from "@/data/mock-data"
 import { SITE_CONFIG } from "@/lib/site-config"
 import { ArrowRight, ShieldCheck, Sparkles, Tag } from "lucide-react"
-
-const highlights = [
-  { label: "Ads moderated weekly", value: "52K+" },
-  { label: "Neighborhoods on the map", value: "120+" },
-  { label: "Median reply time", value: "< 6h" },
-]
 
 const values = [
   {
@@ -33,7 +25,7 @@ export default function AboutPage() {
   return (
     <PageShell
       title={`About ${SITE_CONFIG.name}`}
-      description={`${SITE_CONFIG.name} is a warm, editorial-style marketplace for local classifieds—built for honest photos, calm typography, and quick conversations.`}
+      description={`${SITE_CONFIG.name} is a local classifieds marketplace built for clear listings, honest photos, and fast conversations.`}
       actions={
         <>
           <Button variant="outline" asChild className="rounded-full border-[#e8ddd4]">
@@ -59,14 +51,6 @@ export default function AboutPage() {
               surface where neighbors could list a desk, a camera, or a sublet without fighting the interface. The same care goes into buyer
               tools: saved searches, tidy messaging, and category pages that breathe.
             </p>
-            <div className="grid gap-4 sm:grid-cols-3">
-              {highlights.map((item) => (
-                <div key={item.label} className="rounded-2xl border border-[#e8ddd4] bg-[#faf4ec]/80 p-4">
-                  <div className="font-display text-2xl font-semibold text-foreground">{item.value}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">{item.label}</div>
-                </div>
-              ))}
-            </div>
           </CardContent>
         </Card>
         <div className="space-y-4">
@@ -110,27 +94,6 @@ export default function AboutPage() {
             <Link href="/classifieds">See live listings</Link>
           </Button>
         </div>
-      </div>
-
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
-        {mockTeamMembers.map((member) => (
-          <Card key={member.id} className="border-[#e8ddd4] bg-[#fffdfb]/95 transition-transform hover:-translate-y-1">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12 border border-[#e8ddd4]">
-                  <AvatarImage src={member.avatar} alt={member.name} />
-                  <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">{member.name}</p>
-                  <p className="text-xs text-muted-foreground">{member.role}</p>
-                </div>
-              </div>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{member.bio}</p>
-              <p className="mt-3 text-xs text-muted-foreground">{member.location}</p>
-            </CardContent>
-          </Card>
-        ))}
       </div>
     </PageShell>
   )
