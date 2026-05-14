@@ -1,20 +1,12 @@
-'use client'
-
-import { useState } from 'react'
 import { PageShell } from '@/components/shared/page-shell'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { useToast } from '@/components/ui/use-toast'
+import { ContactLeadForm } from '@/components/shared/contact-lead-form'
 import {
-import { ContactLeadForm } from "@/components/shared/contact-lead-form";
   Handshake,
   ShieldCheck,
   MapPin,
   Mail,
   Clock,
   MessageCircle,
-  Sparkles,
 } from 'lucide-react'
 
 const lanes = [
@@ -39,42 +31,12 @@ const lanes = [
 ]
 
 export default function ContactPage() {
-  const { toast } = useToast()
   const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'hello@agenisfree.com'
   const lounge = [
     { icon: Mail, label: 'Email', value: contactEmail },
     { icon: Clock, label: 'Hours', value: 'Monday-Friday · 9am to 6pm WET' },
     { icon: MessageCircle, label: 'Community', value: 'Seller circles meet weekly in chat' },
   ]
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [topic, setTopic] = useState('')
-  const [message, setMessage] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!name.trim() || !email.trim() || !message.trim()) {
-      toast({
-        title: 'A quick heads-up',
-        description: 'Please add your name, email, and a short message.',
-        variant: 'destructive',
-      })
-      return
-    }
-    setSubmitting(true)
-    setTimeout(() => {
-      toast({
-        title: 'Message sent',
-        description: 'A real person will reply at the address above.',
-      })
-      setName('')
-      setEmail('')
-      setTopic('')
-      setMessage('')
-      setSubmitting(false)
-    }, 700)
-  }
 
   return (
     <PageShell
@@ -114,7 +76,7 @@ export default function ContactPage() {
               ))}
             </ul>
             <a
-              href={`mailto:${contactEmail}`}
+              href={'mailto:' + contactEmail}
               className="mt-5 inline-flex items-center justify-center rounded-full bg-[#2a1f2e] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#3c2d41]"
             >
               Email us
@@ -122,7 +84,13 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <ContactLeadForm />
+        <div className="rounded-[2rem] border border-[#e8ddd4] bg-[#fffdfb]/95 p-8 shadow-[0_18px_50px_rgba(50,32,24,0.06)] sm:p-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#7c6aa8]">Send a note</p>
+          <h2 className="mt-2 font-display text-3xl font-semibold">We read every message</h2>
+          <div className="mt-6">
+            <ContactLeadForm />
+          </div>
+        </div>
       </div>
     </PageShell>
   )
