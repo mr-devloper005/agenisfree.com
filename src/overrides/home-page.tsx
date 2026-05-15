@@ -271,7 +271,7 @@ export async function HomePageOverride() {
               <p className={`mt-3 text-sm leading-7 ${muted}`}>Add a title, price, and a handful of photos. Buyers message you here—no awkward comment threads.</p>
               <div className="mt-6 grid gap-4">
                 <input readOnly className="h-12 rounded-xl border border-[#e8ddd4] bg-white px-4 text-sm" placeholder="What are you selling?" />
-                <input readOnly type="email" className="h-12 rounded-xl border border-[#e8ddd4] bg-white px-4 text-sm" placeholder="Contact email" />
+                <input readOnly type="text" className="h-12 rounded-xl border border-[#e8ddd4] bg-white px-4 text-sm" placeholder="Contact details" />
                 <div className="flex min-h-[120px] items-center justify-center rounded-2xl border border-dashed border-[#d2c4b8] bg-[#faf4ec]/80 text-sm text-[#7a655b]">Drag photos here (after you sign in)</div>
                 <Link href="/create" className={`inline-flex h-12 items-center justify-center ${pillDark}`}>
                   Continue to publish

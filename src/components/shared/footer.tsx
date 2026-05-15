@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { FileText, Building2, LayoutGrid, Tag, Facebook, Twitter, Instagram, Image as ImageIcon, User, ArrowRight, Sparkles } from 'lucide-react'
+import { FileText, Building2, LayoutGrid, Tag, Image as ImageIcon, User, ArrowRight, Sparkles } from 'lucide-react'
 import { SITE_CONFIG, type TaskKey } from '@/lib/site-config'
 import { siteContent } from '@/config/site.content'
 import { getFactoryState } from '@/design/factory/get-factory-state'
@@ -26,6 +26,7 @@ const footerLinks = {
   })),
   company: [
     { name: 'About', href: '/about' },
+    { name: 'Contact Us', href: '/contact' },
     { name: 'Team', href: '/team' },
     { name: 'Careers', href: '/careers' },
     { name: 'Blog', href: '/blog' },
@@ -34,8 +35,6 @@ const footerLinks = {
   resources: [
     { name: 'Help Center', href: '/help' },
     { name: 'Community', href: '/community' },
-    { name: 'Developers', href: '/developers' },
-    { name: 'Status', href: '/status' },
   ],
   legal: [
     { name: 'Privacy', href: '/privacy' },
@@ -44,12 +43,6 @@ const footerLinks = {
     { name: 'Licenses', href: '/licenses' },
   ],
 }
-
-const socialLinks = [
-  { name: 'Facebook', href: 'https://facebook.com', icon: Facebook },
-  { name: 'Twitter', href: 'https://twitter.com', icon: Twitter },
-  { name: 'Instagram', href: 'https://instagram.com', icon: Instagram },
-]
 
 export function Footer() {
   if (FOOTER_OVERRIDE_ENABLED) {
@@ -74,6 +67,12 @@ export function Footer() {
                 {task.label}
               </Link>
             ))}
+            <Link href="/about" className="rounded-lg border border-[#d7deca] bg-white px-3 py-2 text-sm font-medium text-[#1f2617] hover:bg-[#ebefdf]">
+              About
+            </Link>
+            <Link href="/contact" className="rounded-lg border border-[#d7deca] bg-white px-3 py-2 text-sm font-medium text-[#1f2617] hover:bg-[#ebefdf]">
+              Contact Us
+            </Link>
           </div>
         </div>
       </footer>
@@ -84,24 +83,6 @@ export function Footer() {
     return (
       <footer className="border-t border-[#dcd0e5] bg-[linear-gradient(180deg,#f3edf8_0%,#ebe3f4_55%,#e4daf0_100%)] text-[#2a1f2e]">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-xl rounded-[2rem] border border-[#cfc2ee]/60 bg-white/85 p-2 shadow-[0_20px_60px_rgba(80,60,110,0.12)] backdrop-blur">
-            <div className="flex items-center gap-2 rounded-[1.75rem] bg-[#faf7fc] px-4 py-3">
-              <input
-                type="email"
-                readOnly
-                placeholder="Subscribe for weekly deal drops"
-                className="min-w-0 flex-1 bg-transparent text-sm text-[#2a1f2e] outline-none placeholder:text-[#7a6b86]"
-              />
-              <Link
-                href="/register"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#1c1410] text-[#fff8f0] transition hover:bg-[#2a221c]"
-                aria-label="Subscribe"
-              >
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-
           <div className="mt-12 grid gap-10 lg:grid-cols-[1.1fr_0.9fr_1fr]">
             <div className="rounded-[2rem] border border-[#d8cce8] bg-white/70 p-7 shadow-sm">
               <div className="flex items-center gap-3">
@@ -150,22 +131,7 @@ export function Footer() {
                   ))}
                 </ul>
               </div>
-              <div>
-                <h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7c6aa8]">Social</h3>
-                <div className="mt-4 flex gap-3">
-                  {socialLinks.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-full border border-[#d8cce8] bg-white/90 p-2.5 text-[#4a3d52] hover:border-[#b8a6d6] hover:text-[#1c1410]"
-                    >
-                      <item.icon className="h-4 w-4" />
-                    </Link>
-                  ))}
-                </div>
-              </div>
+              <div />
             </div>
           </div>
 
@@ -174,6 +140,12 @@ export function Footer() {
               &copy; {new Date().getFullYear()} {SITE_CONFIG.name}. Crafted for calm local commerce.
             </p>
             <div className="flex flex-wrap justify-center gap-6">
+              <Link href="/about" className="hover:text-[#1c1410]">
+                About
+              </Link>
+              <Link href="/contact" className="hover:text-[#1c1410]">
+                Contact Us
+              </Link>
               <Link href="/privacy" className="hover:text-[#1c1410]">
                 Privacy Policy
               </Link>
