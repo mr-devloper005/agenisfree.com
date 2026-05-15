@@ -1,5 +1,6 @@
 ﻿import { PageShell } from '@/components/shared/page-shell'
-import { ShieldCheck, Mail, Database, UserCheck, Lock, Bell } from 'lucide-react'
+import { ShieldCheck, Database, UserCheck, Lock, Bell } from 'lucide-react'
+import Link from 'next/link'
 import { SITE_CONFIG } from '@/lib/site-config'
 
 const pillars = [
@@ -13,7 +14,7 @@ const pillars = [
     icon: UserCheck,
     title: 'How we use it',
     body:
-      'To show you relevant classifieds, deliver messages between buyers and sellers, keep the platform safe from spam, and send the occasional product email you can opt out of anytime.',
+      'To show you relevant classifieds, deliver messages between buyers and sellers, and keep the platform safe from spam and abuse.',
   },
   {
     icon: Lock,
@@ -25,14 +26,14 @@ const pillars = [
     icon: Bell,
     title: 'Your controls',
     body:
-      'Export your data, edit or delete any ad, switch off marketing email from Settings, and request a full account erasure with one email to the privacy desk.',
+      'Export your data, edit or delete any ad, manage your preferences from Settings, and request full account erasure from Contact.',
   },
 ]
 
 const faqs = [
   {
     q: 'Do you share data with third parties?',
-    a: 'Only with processors who help run the service (hosting, email delivery) and only under strict data-processing agreements.',
+    a: 'Only with processors who help run the service (hosting and delivery infrastructure) and only under strict data-processing agreements.',
   },
   {
     q: 'Can buyers see my phone number?',
@@ -64,8 +65,7 @@ export default function PrivacyPage() {
           </div>
           <p className="mt-6 max-w-3xl text-sm leading-8 text-[#6b5348]">
             We built this policy in plain language because a classifieds site should not require a legal degree to join. If anything here is
-            unclear, reach out to <a href="mailto:privacy@agenisfree.com" className="underline underline-offset-4">privacy@agenisfree.com</a> and
-            a real person will reply.
+            unclear, use our <Link href="/contact" className="underline underline-offset-4">contact page</Link> and a real person will reply.
           </p>
         </div>
 
@@ -93,12 +93,8 @@ export default function PrivacyPage() {
               </div>
             ))}
           </div>
-          <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-[#5a4a5c]">
-            <Mail className="h-4 w-4" />
-            <span>Write to the privacy desk at</span>
-            <a href="mailto:privacy@agenisfree.com" className="font-semibold text-[#2a1f2e] underline-offset-4 hover:underline">
-              privacy@agenisfree.com
-            </a>
+          <div className="mt-8 text-sm text-[#5a4a5c]">
+            Need help with privacy controls? Visit <Link href="/contact" className="font-semibold text-[#2a1f2e] underline-offset-4 hover:underline">Contact</Link>.
           </div>
         </div>
       </div>

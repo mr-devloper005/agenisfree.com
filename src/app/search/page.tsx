@@ -7,6 +7,7 @@ import { buildPostUrl, getPostTaskKey } from "@/lib/task-data";
 import { getMockPostsForTask } from "@/lib/mock-posts";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { TaskPostCard } from "@/components/shared/task-post-card";
+import { CATEGORY_OPTIONS, normalizeCategory } from "@/lib/categories";
 
 export const revalidate = 3;
 
@@ -19,6 +20,8 @@ const compactText = (value: unknown) => {
   if (typeof value !== "string") return "";
   return stripHtml(value).replace(/\s+/g, " ").trim().toLowerCase();
 };
+const normalizeForCompare = (value: string) =>
+  value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
 export default async function SearchPage({
   searchParams,
@@ -29,6 +32,10 @@ export default async function SearchPage({
   const query = (resolved.q || "").trim();
   const normalized = query.toLowerCase();
   const category = (resolved.category || "").trim().toLowerCase();
+  const normalizedCategory = category ? normalizeCategory(category) : "";
+  const selectedCategoryOption = CATEGORY_OPTIONS.find(
+    (item) => item.slug === normalizedCategory
+  );
   const task = (resolved.task || "").trim().toLowerCase();
   const useMaster = resolved.master !== "0";
   const feed = await fetchSiteFeed(
@@ -55,7 +62,12 @@ export default async function SearchPage({
     const tags = Array.isArray(post.tags) ? post.tags.join(" ") : "";
     const tagsText = compactText(tags);
     const derivedCategory = categoryText || tagsText;
-    if (category && !derivedCategory.includes(category)) return false;
+    if (normalizedCategory) {
+      const categoryHaystack = normalizeForCompare(derivedCategory);
+      const selectedSlug = normalizeForCompare(normalizedCategory);
+      const selectedName = normalizeForCompare(selectedCategoryOption?.name || "");
+      if (!categoryHaystack.includes(selectedSlug) && !categoryHaystack.includes(selectedName)) return false;
+    }
     if (task && typeText && typeText !== task) return false;
     if (!normalized.length) return true;
     return (
@@ -81,8 +93,20 @@ export default async function SearchPage({
       actions={
         <form action="/search" className="flex w-full gap-2 sm:w-auto">
           <input type="hidden" name="master" value="1" />
-          {category ? <input type="hidden" name="category" value={category} /> : null}
           {task ? <input type="hidden" name="task" value={task} /> : null}
+          <select
+            name="category"
+            defaultValue={normalizedCategory}
+            className="h-11 rounded-md border border-input bg-background px-3 text-sm"
+            aria-label="Filter by category"
+          >
+            <option value="">All categories</option>
+            {CATEGORY_OPTIONS.map((item) => (
+              <option key={item.slug} value={item.slug}>
+                {item.name}
+              </option>
+            ))}
+          </select>
           <div className="relative w-full sm:w-80">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
